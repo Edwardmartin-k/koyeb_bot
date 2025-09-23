@@ -8,7 +8,7 @@ from keep_alive import keep_alive  # Import the keep_alive function
 
 # --- Configuration ---
 # Your credentials MUST be stored in Replit Secrets for security.
-API_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+API_TOKEN = os.environ.get(8301628021:AAG4q1qq-FN0-3QX1Ze6aQPgw8E1pd8P5fI)
 
 # A check to ensure the secret is set
 if not API_TOKEN:
