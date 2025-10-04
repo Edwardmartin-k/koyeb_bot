@@ -3,7 +3,6 @@ import os
 import schedule
 import time
 import threading
-from telebot import types
 from keep_alive import keep_alive
 
 # --- Configuration ---
@@ -24,13 +23,13 @@ bot = telebot.TeleBot(API_TOKEN)
 # This dictionary tracks users who have already received a file.
 user_usage = {}
 
-# --- File Storage (Add your files and series here) ---
+# --- File Storage (Add your single movie files here) ---
 FILES = {
-    "got": {
-        "type": "single",
-        "file_id": "BQACAgUAAxkBAAIBMGjgtNpnsd5f5veDMrXehMPGfpHGAAL5GAACw9OAVe99IbZ3jy-aNgQ"
+    "fall": {
+        "file_id": "BQACAgUAAxkBAAIBRmjgt53aF_5Iee1oapfXORT-8ZYRAAKtGgACNQuoVYWDs9gHXC0mNgQ"
     },
-  
+    # Add more movies here, e.g.:
+    # "movie2": { "file_id": "ANOTHER_FILE_ID_HERE" }
 }
 
 
@@ -61,7 +60,7 @@ def run_scheduler():
         time.sleep(1)
 
 
-# --- Bot Command and Callback Handlers ---
+# --- Bot Command Handlers ---
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -82,37 +81,8 @@ def send_welcome(message):
         bot.reply_to(message, "❌ You have already claimed your one file for this session.")
         return
 
-    item = FILES[file_key]
-    if item["type"] == "series":
-        send_series_menu(message, file_key)
-    else:
-        send_file_and_finalize(message, file_key)
-
-
-def send_series_menu(message, series_key):
-    """Sends a message with season selection buttons."""
-    series = FILES[series_key]
-    markup = types.InlineKeyboardMarkup(row_width=2)
-    buttons = []
-    for season_key, season_name in series["seasons"].items():
-        # Pass the season key in the callback data
-        buttons.append(types.InlineKeyboardButton(season_name, callback_data=f"getfile:{season_key}"))
-    markup.add(*buttons)
-    bot.send_message(message.chat.id, f"Please select a season for **{series['title']}**:", reply_markup=markup, parse_mode="Markdown")
-
-@bot.callback_query_handler(func=lambda call: call.data.startswith("getfile:"))
-def handle_file_request(call):
-    """Handles button clicks for series and single files."""
-    user_id = call.from_user.id
-    file_key = call.data.split(":")[1]
-
-    if user_id in user_usage:
-        bot.answer_callback_query(call.id, "❌ You have already claimed your one file.", show_alert=True)
-        return
-
-    # Delete the season selection message for a cleaner interface
-    bot.delete_message(call.message.chat.id, call.message.message_id)
-    send_file_and_finalize(call.message, file_key)
+    # Since there are no series, we directly send the file.
+    send_file_and_finalize(message, file_key)
 
 
 def send_file_and_finalize(message, file_key):
@@ -135,7 +105,6 @@ def send_file_and_finalize(message, file_key):
         sent_message = bot.send_document(chat_id, file_id, caption=caption_text, parse_mode="Markdown")
 
         # --- Schedule Deletion ---
-        # We start a new thread so the bot isn't blocked while waiting
         deletion_thread = threading.Thread(target=schedule_message_deletion, args=(chat_id, sent_message.message_id))
         deletion_thread.start()
 
