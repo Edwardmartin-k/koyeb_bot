@@ -77,9 +77,7 @@ def send_welcome(message):
         bot.reply_to(message, "❌ Invalid or expired file link.")
         return
 
-    if user_id in user_usage:
-        bot.reply_to(message, "❌ You have already claimed your one file for this session.")
-        return
+
 
     # Since there are no series, we directly send the file.
     send_file_and_finalize(message, file_key)
