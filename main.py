@@ -26,21 +26,11 @@ user_usage = {}
 
 # --- File Storage (Add your files and series here) ---
 FILES = {
-    "coolie": {
+    "got": {
         "type": "single",
         "file_id": "BQACAgUAAxkBAAIBMGjgtNpnsd5f5veDMrXehMPGfpHGAAL5GAACw9OAVe99IbZ3jy-aNgQ"
     },
-    # Example of a series
-    "got": {
-        "type": "series",
-        "title": "Game of Thrones",
-        "seasons": {
-            "got_s1": "Season 1",
-            "got_s2": "Season 2",
-        }
-    },
-    "got_s1": { "type": "single", "file_id": "FILE_ID_FOR_SEASON_1" },
-    "got_s2": { "type": "single", "file_id": "FILE_ID_FOR_SEASON_2" },
+  
 }
 
 
